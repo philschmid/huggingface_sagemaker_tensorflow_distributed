@@ -125,8 +125,8 @@ def main():
     # callbacks
     if is_sagemaker_dp_enabled():
         # https://sagemaker.readthedocs.io/en/stable/api/training/sdp_versions/smd_data_parallel_tensorflow.html#smdistributed.dataparallel.tensorflow.broadcast_global_variables
-        # BroadcastGlobalVariablesCallback = hvd.broadcast_global_variables
-        BroadcastGlobalVariablesCallback = hvd.BroadcastGlobalVariablesHook
+        # TODO: adjust to the coresponding sagemaker callback
+        BroadcastGlobalVariablesCallback = hvd.callbacks.BroadcastGlobalVariablesCallback
     else:
         # https://horovod.readthedocs.io/en/stable/api.html#horovod.tensorflow.keras.callbacks.BroadcastGlobalVariablesCallback
         BroadcastGlobalVariablesCallback = hvd.callbacks.BroadcastGlobalVariablesCallback

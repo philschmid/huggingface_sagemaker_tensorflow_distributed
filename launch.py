@@ -12,14 +12,14 @@ sess = sagemaker.Session()
 # hyperparameters, which are passed into the training job
 hyperparameters = {
     "epochs": 1,
-    "train_batch_size": 8,
+    "train_batch_size": 6,
     "eval_batch_size": 2,
     "model_name_or_path": "bert-large-uncased-whole-word-masking",
 }
 # configuration for running training on smdistributed Data Parallel
 # distribution = {'smdistributed':{'dataparallel':{ 'enabled': True }}}
 # horovod launch
-# distribution = {"mpi": {"enabled": True, "custom_mpi_options": "-verbose --NCCL_DEBUG=INFO -x RDMAV_FORK_SAFE=1"}}
+distribution = {"mpi": {"enabled": True, "custom_mpi_options": "-verbose --NCCL_DEBUG=INFO -x RDMAV_FORK_SAFE=1"}}
 # no distribution
 distribution = None
 # instance configurations
@@ -30,9 +30,9 @@ instance_count = 1
 
 huggingface_estimator = HuggingFace(
     # distibuted script,
-    # entry_point="train.py",
+    entry_point="train.py",
     # single_node script,
-    entry_point="singe_node_train.py",
+    # entry_point="singe_node_train.py",
     source_dir="./scripts",
     instance_type=instance_type,
     role=role,
