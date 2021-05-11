@@ -37,8 +37,8 @@ def main():
 
     # Hyperparameters sent by the client are passed as command-line arguments to the script.
     parser.add_argument("--epochs", type=int, default=3)
-    parser.add_argument("--train-batch-size", type=int, default=16)
-    parser.add_argument("--eval-batch-size", type=int, default=8)
+    parser.add_argument("--train_batch_size", type=int, default=8)
+    parser.add_argument("--eval_batch_size", type=int, default=4)
     parser.add_argument("--model_name_or_path", type=str)
     parser.add_argument("--learning_rate", type=str, default=5e-5)
     parser.add_argument("--do_train", type=bool, default=True)
@@ -60,6 +60,7 @@ def main():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
+    logger.info(args)
     #
     # Preprocesssing
     #
@@ -149,7 +150,9 @@ def main():
         train_results = model.fit(
             tf_train_dataset,
             epochs=args.epochs,
+            # steps_per_epoch=500 // hvd.size(),
             callbacks=callbacks,
+            validation_batch_size=args.eval_batch_size,
             batch_size=args.train_batch_size,
             verbose=1 if hvd.rank() == 0 else 0,
         )

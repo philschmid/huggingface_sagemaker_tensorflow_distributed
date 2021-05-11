@@ -10,7 +10,12 @@ role = iam_client.get_role(RoleName="sagemaker_execution_role")["Role"]["Arn"]
 sess = sagemaker.Session()
 
 # hyperparameters, which are passed into the training job
-hyperparameters = {"epochs": 1, "train_batch_size": 4, "model_name": "bert-large-uncased-whole-word-masking"}
+hyperparameters = {
+    "epochs": 1,
+    "train_batch_size": 16,
+    "eval_batch_size": 2,
+    "model_name_or_path": "bert-base-uncased",
+}
 # configuration for running training on smdistributed Data Parallel
 # distribution = {'smdistributed':{'dataparallel':{ 'enabled': True }}}
 distribution = {"mpi": {"enabled": True, "custom_mpi_options": "-verbose --NCCL_DEBUG=INFO -x RDMAV_FORK_SAFE=1"}}
