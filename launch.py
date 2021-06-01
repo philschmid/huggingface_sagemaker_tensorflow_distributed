@@ -12,21 +12,26 @@ sess = sagemaker.Session()
 # hyperparameters, which are passed into the training job
 hyperparameters = {
     "epochs": 1,
-    "train_batch_size": 6,
+    "train_batch_size": 8,
     "eval_batch_size": 2,
     "model_name_or_path": "bert-large-uncased-whole-word-masking",
 }
 # configuration for running training on smdistributed Data Parallel
 # distribution = {'smdistributed':{'dataparallel':{ 'enabled': True }}}
 # horovod launch
-distribution = {"mpi": {"enabled": True, "custom_mpi_options": "-verbose --NCCL_DEBUG=INFO -x RDMAV_FORK_SAFE=1"}}
+# distribution = {"mpi": {"enabled": True, "custom_mpi_options": "-verbose --NCCL_DEBUG=INFO -x RDMAV_FORK_SAFE=1"}}
 # no distribution
 distribution = None
 # instance configurations
 # instance_type = "ml.p3.16xlarge"
-instance_type = "ml.p3dn.24xlarge"
+instance_type = "ml.p3.2xlarge"
+# instance_type = "ml.p3dn.24xlarge"
 instance_count = 1
 # volume_size=200
+
+image_uri = "570106654206.dkr.ecr.us-east-1.amazonaws.com/keras-smddp-private-preview:tf-2-4-1-hf-keras-05-27-06-37-16-a10645a1"
+
+
 
 huggingface_estimator = HuggingFace(
     # distibuted script,
@@ -38,8 +43,9 @@ huggingface_estimator = HuggingFace(
     role=role,
     session=sess,
     instance_count=instance_count,
-    transformers_version="4.5.0",
-    tensorflow_version="2.4.1",
+    image_uri=image_uri,
+    # transformers_version="4.5.0",
+    # tensorflow_version="2.4.1",
     py_version="py37",
     distribution=distribution,
     hyperparameters=hyperparameters,

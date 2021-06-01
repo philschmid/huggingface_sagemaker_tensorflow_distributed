@@ -15,7 +15,7 @@ from transformers.file_utils import is_sagemaker_dp_enabled
 
 if is_sagemaker_dp_enabled():
     # import smdistributed
-    import smdistributed.dataparallel.tensorflow as hvd
+    import smdistributed.dataparallel.tensorflow.keras as hvd
 else:
     # import Horovod
     import horovod.tensorflow.keras as hvd
@@ -123,13 +123,8 @@ def main():
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics, experimental_run_tf_function=False)
 
     # callbacks
-    if is_sagemaker_dp_enabled():
-        # https://sagemaker.readthedocs.io/en/stable/api/training/sdp_versions/smd_data_parallel_tensorflow.html#smdistributed.dataparallel.tensorflow.broadcast_global_variables
-        # TODO: adjust to the coresponding sagemaker callback
-        BroadcastGlobalVariablesCallback = hvd.callbacks.BroadcastGlobalVariablesCallback
-    else:
-        # https://horovod.readthedocs.io/en/stable/api.html#horovod.tensorflow.keras.callbacks.BroadcastGlobalVariablesCallback
-        BroadcastGlobalVariablesCallback = hvd.callbacks.BroadcastGlobalVariablesCallback
+    # https://horovod.readthedocs.io/en/stable/api.html#horovod.tensorflow.keras.callbacks.BroadcastGlobalVariablesCallback
+    BroadcastGlobalVariablesCallback = hvd.callbacks.BroadcastGlobalVariablesCallback
 
     callbacks = [
         # broadcast initial variable states from rank 0 to all other processes.
